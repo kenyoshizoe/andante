@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- <xacro:include filename="$(find andante)/urdf/sensors/ld06.gazebo.xacro" /> -->
+    <xacro:macro name="ld06" params="parent *origin">
+        <joint name="ld06" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="laser_link" />
+        </joint>
+        <link name="laser_link">
+            <visual>
+                <origin xyz="0 0 -0.027" rpy="${3.14159274 / 2} 0 0" />
+                <geometry>
+                    <mesh filename="package://andante_description/mesh/ld06.stl" scale="0.001 0.001 0.001"/>
+                </geometry>
+            </visual>
+            <!-- <collision>
+                <geometry>
+                    <mesh filename="package://andante_description/mesh/ld06.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 -0.0164" />
+                <xacro:box_inertial mass="0.4" height="0.07" width="0.07" depth="0.08" />
+            </inertial> -->
+        </link>
+    </xacro:macro>
+</robot>
