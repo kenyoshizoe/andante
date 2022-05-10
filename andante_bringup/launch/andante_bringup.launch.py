@@ -14,7 +14,7 @@ def generate_launch_description():
         name='create_driver',
         output='screen',
         parameters=[
-            {'config': os.path.join(get_package_share_directory("andante_launch"), "config/create_driver.yaml")}
+            {'config': os.path.join(get_package_share_directory("andante_bringup"), "config/create_driver.yaml")}
         ]
     )
     path_to_urdf= get_package_share_directory('andante_description') + "/urdf/andante.urdf.xacro"
