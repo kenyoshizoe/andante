@@ -15,7 +15,7 @@ def generate_launch_description():
         default_value=os.path.join(pkg_dir, 'config', 'slam_toolbox.yaml'),
         description='Full path to the ROS2 parameters file to use for the slam_toolbox node'
     )
-    start_async_slam_toolbox_node = Node(
+    slam_toolbox = Node(
         name='slam_toolbox',
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
@@ -106,15 +106,15 @@ def generate_launch_description():
 
     ld = LaunchDescription()
     ld.add_action(slam_params_file)
-    ld.add_action(start_async_slam_toolbox_node)
-    # ld.add_action(nav2_autostart)
-    # ld.add_action(nav2_param_file)
-    # ld.add_action(nav2_bt_xml)
-    # ld.add_action(nav2_qos)
-    # ld.add_action(controller_server)
-    # ld.add_action(planner_server)
-    # ld.add_action(recoveries_server)
-    # ld.add_action(bt_navigator)
-    # ld.add_action(waypoint_follower)
-    # ld.add_action(lifecycle_manager_navigation)
+    ld.add_action(slam_toolbox)
+    ld.add_action(nav2_autostart)
+    ld.add_action(nav2_param_file)
+    ld.add_action(nav2_bt_xml)
+    ld.add_action(nav2_qos)
+    ld.add_action(controller_server)
+    ld.add_action(planner_server)
+    ld.add_action(recoveries_server)
+    ld.add_action(bt_navigator)
+    ld.add_action(waypoint_follower)
+    ld.add_action(lifecycle_manager_navigation)
     return ld
