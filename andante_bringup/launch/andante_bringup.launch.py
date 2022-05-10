@@ -49,7 +49,7 @@ def generate_launch_description():
     )
     ld06_range_threshold = DeclareLaunchArgument(
         name='ld06_range_threshold', 
-        default_value='0.1',
+        default_value='0.2',
         description='Range Threshold'
     )
     ldlidar = Node(
