@@ -2,9 +2,13 @@
 <robot name="andante" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find andante_description)/urdf/base/andante_base.urdf.xacro" />
   <xacro:include filename="$(find andante_description)/urdf/sensors/ld06.urdf.xacro" />
+  <xacro:include filename="$(find andante_description)/urdf/sensors/azure_kinect.urdf.xacro" />
 
   <xacro:andante_base wheel_separation="0.235" base_diameter="0.3485" />
   <xacro:ld06 parent="base_link">
     <origin xyz="-0.0471 0 0.09595" rpy="0 0 ${PI}" />
   </xacro:ld06>
+  <xacro:azure_kinect parent="base_link">
+    <origin xyz="0 0 0.25" rpy="0 0 0" />
+  </xacro:azure_kinect>
 </robot>
