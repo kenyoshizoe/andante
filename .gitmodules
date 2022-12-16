@@ -7,3 +7,6 @@
 [submodule "ldlidar"]
 	path = ldlidar
 	url = https://github.com/linorobot/ldlidar.git
+[submodule "jsk_visualization"]
+	path = jsk_visualization
+	url = https://github.com/Kotakku/jsk_visualization.git
