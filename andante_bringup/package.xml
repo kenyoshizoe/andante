@@ -13,6 +13,8 @@
   <test_depend>ament_lint_common</test_depend>
 
   <exec_depend>create_robot</exec_depend>
+  <exec_depend>andante_description</exec_depend>
+  <exec_depend>ldlidar</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

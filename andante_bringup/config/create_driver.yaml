@@ -1,7 +1,7 @@
 create_driver:
   ros__parameters:
     # The device path for the robot
-    dev: "/dev/ttyUSB_andante"
+    dev: "/dev/ttyUSB0"
 
     # Baud rate. Passing this parameter overwrites the inferred value based on the robot_model
     # baud: 115200
@@ -13,10 +13,13 @@ create_driver:
     odom_frame: "odom"
 
     # Time (s) without receiving a velocity command before stopping the robot
-    latch_cmd_duration: 0.2
+    latch_cmd_duration: 1.0
 
     # Internal loop update rate (Hz)
-    loop_hz: 10.0
+    loop_hz: 30.0
 
     # Whether to publish the transform between odom_frame and base_frame
     publish_tf: true
+
+    # Flag to enable/disable the workaround for some 6xx incorrectly reporting OI mode
+    oi_mode_workaround: true
