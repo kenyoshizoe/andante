@@ -16,6 +16,7 @@ def generate_launch_description():
         package='create_driver',
         executable='create_driver',
         name='create_driver',
+        namespace='andante',
         parameters=[
             create_config
         ]
@@ -26,6 +27,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='create_2_robot_state_publisher',
+        namespace='andante',
         output='screen',
         parameters=[
             {
@@ -62,6 +64,7 @@ def generate_launch_description():
         package='ldlidar',
         executable='ldlidar',
         name='ldlidar',
+        namespace='andante',
         output='screen',
         parameters=[
             {'serial_port': LaunchConfiguration("ld06_serial_port")},
@@ -81,6 +84,7 @@ def generate_launch_description():
         package='v4l2_camera',
         executable='v4l2_camera_node',
         name='v4l2_camera',
+        namespace='andante/camera',
         output='screen'
     )
 
