@@ -1,0 +1,6 @@
+[submodule "create_robot"]
+	path = create_robot
+	url = https://github.com/AutonomyLab/create_robot.git
+[submodule "libcreate"]
+	path = libcreate
+	url = https://github.com/AutonomyLab/libcreate.git
