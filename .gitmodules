@@ -4,3 +4,6 @@
 [submodule "libcreate"]
 	path = libcreate
 	url = https://github.com/AutonomyLab/libcreate.git
+[submodule "ldlidar"]
+	path = ldlidar
+	url = https://github.com/linorobot/ldlidar.git
