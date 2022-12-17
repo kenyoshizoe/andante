@@ -1,6 +1,6 @@
 andante_camera_calibration:
   ros__parameters:
-    preview: false
+    preview: true
     img_path: "img"
     dst_path: "result/elp.yaml"
     width: 480
