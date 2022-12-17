@@ -1,0 +1,10 @@
+andante_camera_calibration:
+  ros__parameters:
+    preview: false
+    img_path: "img"
+    dst_path: "result/elp.yaml"
+    width: 480
+    height: 640
+    rows: 7
+    cols: 10
+    grid_size: 0.0239
