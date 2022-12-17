@@ -13,6 +13,11 @@ install(DIRECTORY mesh/
   PATTERN ".svn" EXCLUDE
 )
 
+install(DIRECTORY rviz/
+  DESTINATION share/${PROJECT_NAME}/rviz
+  PATTERN ".svn" EXCLUDE
+)
+
 install(DIRECTORY urdf/
   DESTINATION share/${PROJECT_NAME}/urdf
   PATTERN ".svn" EXCLUDE
