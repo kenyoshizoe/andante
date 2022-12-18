@@ -1,0 +1,44 @@
+andante_camera_linetrace:
+  ros__parameters:
+    camera:
+      src: "/dev/video0"
+      width: 640
+      height: 480
+      fps: 30
+      mode: "YUYV" # BGR, GRAY, YUYV
+      camera_matrix:
+        fx: 466.04801626378963
+        fy: 466.9085133301153
+        cx: 307.0467825072331
+        cy: 246.50641184905263
+      dist:
+        - -0.4224118594449603
+        - 0.26723128152672515
+        - -0.0006153829745503066
+        - 0.0004862571635758298
+        - -0.1260595834413847
+      # using andante_camera_linetracer/calibration
+      M:
+        [
+          -3.33881773e+01, -8.37957446e+01, 9.56614640e+03,
+          -3.30758515e+00, -1.53378238e+02, 1.21911968e+04,
+          -9.35667651e-03, -1.68113899e-01, 1.00000000e+00
+        ]
+    map:
+      length_x: 1.0 # [m]
+      length_y: 1.0 # [m]
+      resolution: 0.001 # [m/pixel]
+      # robot pose in map img
+      # caution: this is coordinate in img (strange coordinate)
+      robot_pose:
+        x: 0.5 # [m]
+        y: 1.0 # [m]
+        theta: -1.57079632679 # [rad]
+    calibration:
+      src: "img/60_2.jpg"
+      marker_size: 0.093 # [m]
+      # pose of marker center from robot
+      marker_pose:
+        x: 0.6 # [m]
+        y: 0 # [m]
+        theta: 1.57079632679 # [rad]
