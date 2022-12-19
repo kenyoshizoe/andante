@@ -616,6 +616,150 @@
                         </script>
                     </material>
                 </visual>
+                <collision name='collision_fence_g1'>
+                    <pose>0.49125 0.35 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.4725 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g2'>
+                    <pose>1.75 1.05 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 1.445 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g3'>
+                    <pose>1.4 1.75 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.655 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g4'>
+                    <pose>1.05 1.85 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.245 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g5'>
+                    <pose>0 1.95 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.055 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g6'>
+                    <pose>-1.05 1.85 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.245 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g7'>
+                    <pose>-1.4 1.75 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.655 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g8'>
+                    <pose>-1.75 1.4 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.745 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_g9'>
+                    <pose>-0.3275 1.05 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.8 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s1'>
+                    <pose>-0.49125 -0.35 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.4725 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s2'>
+                    <pose>-1.75 -1.05 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 1.445 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s3'>
+                    <pose>-1.4 -1.75 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.655 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s4'>
+                    <pose>-1.05 -1.85 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.245 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s5'>
+                    <pose>0 -1.95 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.055 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s6'>
+                    <pose>1.05 -1.85 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.245 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s7'>
+                    <pose>1.4 -1.75 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.655 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s8'>
+                    <pose>1.75 -1.4 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>0.045 0.745 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <collision name='collision_fence_s9'>
+                    <pose>0.3275 -1.05 0 0 0 0</pose>
+                    <geometry>
+                        <box>
+                            <size>2.8 0.045 0.045 0 0 0</size>
+                        </box>
+                    </geometry>
+                </collision>
             </link>
         </model>
     </world>
