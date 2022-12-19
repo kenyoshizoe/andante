@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:macro name="plate" params="prefix parent *origin">
+        <joint name="${prefix}plate_joint" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="${prefix}plate_link" />
+        </joint>
+
+        <link name="${prefix}plate_link">
+            <visual>
+                <geometry>
+                    <cylinder length="0.002" radius="0.076" />
+                </geometry>
+                <material name="white">
+                    <color rgba="1.0 1.0 1.0 1.0" />
+                </material>
+            </visual>
+        </link>
+    </xacro:macro>
+</robot>
