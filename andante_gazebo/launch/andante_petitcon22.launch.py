@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-
+import math
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
@@ -54,7 +54,7 @@ def generate_launch_description():
         output='screen',
         arguments=['-entity', 'andante',
                    '-x', '1.5025', '-y', '-1.4', '-z', '0.3',
-                   '-Y', '0',
+                   '-Y', str(math.pi),
                    '-topic', 'robot_description'],
         parameters=[{'use_sim_time': True}]
     )
