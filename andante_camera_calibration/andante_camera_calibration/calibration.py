@@ -77,7 +77,7 @@ def main(args=None):
                 'cx': float(mtx[0][2]),
                 'cy': float(mtx[1][2])
             },
-            'distCoeffs': dist.tolist()
+            'distCoeffs': dist.tolist()[0]
         }
         yaml.dump(result, f)
 
