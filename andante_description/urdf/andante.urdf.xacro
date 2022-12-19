@@ -6,7 +6,7 @@
     <mesh filename="package://create_description/meshes/create_2.dae" />
   </xacro:create_base>
 
-  <xacro:include filename="$(find andante_description)/urdf/sensors/plate.urdf.xacro" />
+  <xacro:include filename="$(find andante_description)/urdf/plate.urdf.xacro" />
   <xacro:plate prefix="" parent="base_link">
     <origin xyz="0 0 0.0713" rpy="0 0 0" />
   </xacro:plate>
