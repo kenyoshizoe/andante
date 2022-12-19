@@ -2,7 +2,6 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:macro name="elp_gazebo" params="prefix">
         <gazebo reference="${prefix}elp_camera_link">
-            <material>Gazebo/Green</material>
             <visualize>true</visualize>
             <turnGravityOff>false</turnGravityOff>
 
