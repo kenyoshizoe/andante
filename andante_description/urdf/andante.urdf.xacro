@@ -3,6 +3,16 @@
   <xacro:include filename="$(find create_description)/urdf/create_base.urdf.xacro" />
 
   <xacro:create_base wheel_separation="0.235" base_diameter="0.3485">
-    <mesh filename="$(find create_description)/meshes/create_2.dae" />
+    <mesh filename="package://create_description/meshes/create_2.dae" />
   </xacro:create_base>
+
+  <xacro:include filename="$(find andante_description)/urdf/sensors/plate.urdf.xacro" />
+  <xacro:plate prefix="" parent="base_link">
+    <origin xyz="0 0 0.0713" rpy="0 0 0" />
+  </xacro:plate>
+
+  <xacro:include filename="$(find andante_description)/urdf/sensors/elp.urdf.xacro" />
+  <xacro:elp prefix="" parent="plate_link">
+    <origin xyz="0 0 0.065" rpy="0 0 0" />
+  </xacro:elp>
 </robot>
