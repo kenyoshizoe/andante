@@ -14,6 +14,23 @@ from launch_ros.actions import Node
 def generate_launch_description():
     # use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
+    path_to_urdf = get_package_share_directory(
+        'andante_description') + "/urdf/andante.urdf.xacro"
+    create_2_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='create_2_robot_state_publisher',
+        # namespace='andante',
+        output='screen',
+        parameters=[
+            {
+                'robot_description': ParameterValue(
+                    Command(['xacro ', str(path_to_urdf)]), value_type=str
+                )
+            }
+        ]
+    )
+
     world = os.path.join(get_package_share_directory('andante_gazebo'),
                          'worlds', 'petitcon22.world')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
@@ -29,25 +46,22 @@ def generate_launch_description():
         ),
     )
 
-    path_to_urdf = get_package_share_directory(
-        'andante_description') + "/urdf/andante.urdf.xacro"
-    create_2_robot_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='create_2_robot_state_publisher',
-        namespace='andante',
+    urdf_spawner = Node(
+        package='gazebo_ros',
+        executable='spawn_entity.py',
+        name='spawn_entity',
+        # namespace='andante',
         output='screen',
-        parameters=[
-            {
-                'robot_description': ParameterValue(
-                    Command(['xacro ', str(path_to_urdf)]), value_type=str
-                )
-            }
-        ]
+        arguments=['-entity', 'andante',
+                   '-x', '1.5025', '-y', '-1.4', '-z', '0.3',
+                   '-Y', '0',
+                   '-topic', 'robot_description'],
+        parameters=[{'use_sim_time': True}]
     )
 
     return LaunchDescription([
         create_2_robot_state_publisher,
         gzserver_launch,
-        gzclient_launch
+        gzclient_launch,
+        urdf_spawner
     ])
