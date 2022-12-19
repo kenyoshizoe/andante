@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find andante_description)/urdf/sensors/elp.gazebo.xacro" />
+    <xacro:macro name="elp" params="prefix parent *origin">
+        <joint name="${prefix}elp_plate_joint" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="${prefix}elp_plate_link" />
+        </joint>
+        <link name="${prefix}elp_plate_link">
+            <visual>
+                <geometry>
+                    <cylinder length="0.002" radius="0.076" />
+                </geometry>
+                <material name="white">
+                    <color rgba="1.0 1.0 1.0 1.0" />
+                </material>
+            </visual>
+        </link>
+        <joint name="${prefix}elp_camera_joint" type="fixed">
+            <origin xyz="0.079727 0 0.028146" rpy="0 0.2618 0" />
+            <parent link="${prefix}elp_plate_link" />
+            <child link="${prefix}elp_camera_link" />
+        </joint>
+        <link name="${prefix}elp_camera_link">
+            <visual>
+                <geometry>
+                    <box size="0.003 0.038 0.038" />
+                </geometry>
+                <material name="dark_blue">
+                    <color rgba="0.1 0.1 0.5 1.0" />
+                </material>
+            </visual>
+        </link>
+        <joint name="${prefix}elp_camera_lens_joint" type="fixed">
+            <origin xyz="0.01 0 0" rpy="0 1.5707 0" />
+            <parent link="${prefix}elp_camera_link" />
+            <child link="${prefix}elp_camera_lens_link" />
+        </joint>
+        <link name="${prefix}elp_camera_lens_link">
+            <visual>
+                <geometry>
+                    <cylinder length="0.02" radius="0.0075" />
+                </geometry>
+                <material name="black">
+                    <color rgba="0.0 0.0 0.0 1.0" />
+                </material>
+            </visual>
+        </link>
+    </xacro:macro>
+</robot>
