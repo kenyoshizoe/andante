@@ -47,5 +47,6 @@
                 </material>
             </visual>
         </link>
+        <xacro:elp_gazebo prefix="" />
     </xacro:macro>
 </robot>

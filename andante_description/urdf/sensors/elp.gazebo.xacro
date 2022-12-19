@@ -6,14 +6,14 @@
             <visualize>true</visualize>
             <turnGravityOff>false</turnGravityOff>
 
-            <sensor type="camera" name="webcam_${sub}_camera">
+            <sensor type="camera" name="${prefix}elp_camera">
                 <update_rate>10.0</update_rate>
-                <camera name="webcam_${sub}_camera">
-                    <pose>${webcam_size/2} 0 0 0 0 0}</pose>
+                <camera name="${prefix}elp_camera">
+                    <pose>0 0 0 0 0 0}</pose>
                     <horizontal_fov>1.3962634</horizontal_fov>
                     <image>
-                        <width>800</width>
-                        <height>600</height>
+                        <width>640</width>
+                        <height>480</height>
                         <format>R8G8B8</format>
                     </image>
                     <clip>
@@ -28,11 +28,11 @@
                 </camera>
                 <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
                     <alwaysOn>true</alwaysOn>
-                    <updateRate>0.0</updateRate>
-                    <cameraName>webcam_${sub}_camera</cameraName>
+                    <updateRate>30.0</updateRate>
+                    <cameraName>${prefix}_camera</cameraName>
                     <imageTopicName>image_raw</imageTopicName>
                     <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-                    <frameName>webcam_${sub}</frameName>
+                    <frameName>${prefix}elp_camera_link</frameName>
                     <hackBaseline>0.0</hackBaseline>
                     <distortionK1>0.0</distortionK1>
                     <distortionK2>0.0</distortionK2>
