@@ -7,5 +7,3 @@
     <mesh filename="package://create_description/meshes/create_2.dae" />
   </xacro:create_base>
 </robot>
-Name: YesNoButton
-Name: YesNoButton
