@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'andante_camera_linetrace = andante_camera_linetrace.andante_camera_linetrace:main',
             'calibration = andante_camera_linetrace.calibration:main',
             'generate_marker = andante_camera_linetrace.generate_marker:main'
         ],

@@ -9,7 +9,10 @@ def main(args=None):
 
     n = rclpy.create_node("andante_camera_linetrace")
 
-    n.declare_parameter("camera.src")
+    n.declare_parameter("camera.use_topic")
+    n.declare_parameter("camera.img_topic")
+    n.declare_parameter("camera.camera_info_topic")
+    n.declare_parameter("camera.camera_src")
     n.declare_parameter("camera.width")
     n.declare_parameter("camera.height")
     n.declare_parameter("camera.fps")

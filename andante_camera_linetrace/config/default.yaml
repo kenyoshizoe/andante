@@ -1,7 +1,11 @@
 andante_camera_linetrace:
   ros__parameters:
     camera:
-      src: "/dev/video0"
+      use_topic: true
+      img_topic: "elp_camera/image_raw"
+      camera_info_topic: "elp_camera/camera_info"
+      # for use_topic=false
+      camera_src: "/dev/video0"
       width: 640
       height: 480
       fps: 30
@@ -20,9 +24,15 @@ andante_camera_linetrace:
       # using andante_camera_linetracer/calibration
       M:
         [
-          -3.33881773e+01, -8.37957446e+01, 9.56614640e+03,
-          -3.30758515e+00, -1.53378238e+02, 1.21911968e+04,
-          -9.35667651e-03, -1.68113899e-01, 1.00000000e+00
+          -3.33881773e+01,
+          -8.37957446e+01,
+          9.56614640e+03,
+          -3.30758515e+00,
+          -1.53378238e+02,
+          1.21911968e+04,
+          -9.35667651e-03,
+          -1.68113899e-01,
+          1.00000000e+00,
         ]
     map:
       length_x: 1.0 # [m]
@@ -34,6 +44,9 @@ andante_camera_linetrace:
         x: 0.5 # [m]
         y: 1.0 # [m]
         theta: -1.57079632679 # [rad]
+    dwa:
+      max_linear_vel:
+      max_angular_vel:
     calibration:
       src: "img/60_2.jpg"
       marker_size: 0.093 # [m]
