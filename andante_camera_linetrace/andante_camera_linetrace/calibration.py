@@ -43,6 +43,8 @@ class AndanteCameraLinetraceCalibration(Node):
             self.calibration(undistort_image)
 
     def declare_params(self):
+        self.declare_parameter("base_frame")
+        self.declare_parameter("odom_topic")
         self.declare_parameter("camera.use_topic")
         self.declare_parameter("camera.img_topic")
         self.declare_parameter("camera.camera_info_topic")
@@ -84,7 +86,7 @@ class AndanteCameraLinetraceCalibration(Node):
             return
         frame = None
         try:
-            frame = self.bridge.imgmsg_to_cv2(msg, "mono8")
+            frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
         except CvBridgeError as e:
             print(e)
             return
@@ -107,6 +109,9 @@ class AndanteCameraLinetraceCalibration(Node):
         img_corners, ids, rejectedImgPoints = aruco.detectMarkers(
             img, aruco_dict)
         img_corners = np.array(img_corners).reshape(-1, 2).astype(np.float32)
+        if img_corners.shape[0] == 0:
+            self.get_logger().error('Couldn\'t find aruco marker.')
+            raise SystemExit
 
         # calc marker pose in map coord
         marker_size = self.get_parameter("calibration.marker_size").value
@@ -154,6 +159,8 @@ class AndanteCameraLinetraceCalibration(Node):
         # preview
         size = (int(map_size / map_resolution), int(map_size / map_resolution))
         preview = cv2.warpPerspective(img, M, size)
+        preview = cv2.polylines(preview, map_corners.reshape(1, -1, 2).astype(np.int32), True,
+                                (255, 0, 0), thickness=1)
         cv2.imshow("preview", preview)
         cv2.waitKey(0)
         raise SystemExit
@@ -164,7 +171,7 @@ def main(args=None):
     andante_camera_linetrace_calibration = AndanteCameraLinetraceCalibration()
     try:
         rclpy.spin(andante_camera_linetrace_calibration)
-    except SystemExit:                 # <--- process the exception
+    except SystemExit:
         rclpy.logging.get_logger("Quitting").info('Done')
     rclpy.shutdown()
 
