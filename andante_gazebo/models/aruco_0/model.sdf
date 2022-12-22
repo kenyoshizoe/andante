@@ -5,9 +5,10 @@
         <link name="link">
             <visual name="visual">
                 <geometry>
-                    <box>
-                        <size>0.11 0.11 0.004</size>
-                    </box>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>0.24 0.24</size>
+                    </plane>
                 </geometry>
                 <material>
                     <script>
