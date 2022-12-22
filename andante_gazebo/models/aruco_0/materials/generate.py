@@ -4,7 +4,7 @@ import numpy as np
 
 def main(args=None):
     SIZE = 300
-    EDGE = 15
+    EDGE = 30
 
     aruco = cv2.aruco
     aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
