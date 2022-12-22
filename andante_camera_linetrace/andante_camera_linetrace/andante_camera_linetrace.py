@@ -49,14 +49,23 @@ class AndanteCameraLinetrace(Node):
                 self.get_parameter("camera.camera_src").value
             )
 
+        # setup map
         map_size = self.get_parameter("map.size").value
-        map_resolution = self.get_parameter("map.resolution").value
+        self.map_resolution = self.get_parameter("map.resolution").value
         self.map_img = np.full(
-            (int(map_size / map_resolution), int(map_size / map_resolution)), 100, dtype=np.int8)
+            (int(map_size / self.map_resolution), int(map_size / self.map_resolution)), 100, dtype=np.int8)
         self.map_pub = self.create_publisher(
             OccupancyGrid, '/map', 10
         )
-
+        self.map_msg = OccupancyGrid()
+        self.map_msg.header = Header()
+        self.map_msg.header.frame_id = self.get_parameter("base_frame").value
+        self.map_msg.info.resolution = self.map_resolution
+        self.map_msg.info.width = int(map_size / self.map_resolution)
+        self.map_msg.info.height = int(map_size / self.map_resolution)
+        self.map_msg.info.origin.position.x = - map_size / 2
+        self.map_msg.info.origin.position.y = - map_size / 2
+        # setup map updator
         self.create_subscription(
             Odometry, self.get_parameter(
                 "odom_topic").value, self.map_update, 10
@@ -108,9 +117,6 @@ class AndanteCameraLinetrace(Node):
         pass
 
     def process_img(self, frame):
-        map_size = self.get_parameter("map.size").value
-        map_resolution = self.get_parameter("map.resolution").value
-
         ret, frame = cv2.threshold(frame, 200, 100, cv2.THRESH_BINARY_INV)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
         frame = cv2.morphologyEx(
@@ -122,45 +128,33 @@ class AndanteCameraLinetrace(Node):
         observe -= 1
 
         self.map_img = np.where(observe == -1, self.map_img, observe)
-
         # publish map_msg
-        map_msg = OccupancyGrid()
-        map_msg.header = Header()
-        map_msg.header.frame_id = self.get_parameter("base_frame").value
-        map_msg.info.resolution = map_resolution
-        map_msg.info.width = int(map_size / map_resolution)
-        map_msg.info.height = int(map_size / map_resolution)
-        map_msg.info.origin.position.x = - map_size / 2
-        map_msg.info.origin.position.y = - map_size / 2
+        self.map_msg.header.stamp = self.get_clock().now().to_msg()
         map_data = cv2.flip(self.map_img, 0).flatten().tolist()
-        map_msg.data = map_data
-        self.map_pub.publish(map_msg)
+        self.map_msg.data = map_data
+        self.map_pub.publish(self.map_msg)
 
     def map_update(self, msg):
         if self.pre_pose is None:
             self.pre_pose = msg.pose.pose
 
-        # transform map
+        # find map transform
         dx = msg.pose.pose.position.x - self.pre_pose.position.x
         dy = msg.pose.pose.position.y - self.pre_pose.position.y
         pre_theta = tf_transformations.euler_from_quaternion([
             msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
-            msg.pose.pose.orientation.z, msg.pose.pose.orientation.w]
-        )[2]
+            msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])[2]
         cur_theta = tf_transformations.euler_from_quaternion([
             self.pre_pose.orientation.x, self.pre_pose.orientation.y,
-            self.pre_pose.orientation.z, self.pre_pose.orientation.w
-        ])[2]
+            self.pre_pose.orientation.z, self.pre_pose.orientation.w])[2]
         dtheta = -(cur_theta - pre_theta)
-
+        # TODO: Quit hard coding
         if abs(math.sqrt(dx**2 + dy**2)) < 0.01 and abs(dtheta) < (math.pi / 36):
             return
-
-        map_resolution = self.get_parameter("map.resolution").value
         dx_img = (math.cos(cur_theta) * dx +
-                  math.sin(cur_theta) * dy) / map_resolution
+                  math.sin(cur_theta) * dy) / self.map_resolution
         dy_img = (-math.sin(cur_theta) * dx +
-                  math.cos(cur_theta) * dy) / map_resolution
+                  math.cos(cur_theta) * dy) / self.map_resolution
         M_trans = np.array([
             [1, 0, -dx_img],
             [0, 1, -dy_img]
@@ -168,6 +162,7 @@ class AndanteCameraLinetrace(Node):
         M_rotate = cv2.getRotationMatrix2D(
             (self.map_img.shape[1] / 2, self.map_img.shape[0]/2), -dtheta/math.pi*180, 1.0)
 
+        # transfrom map
         self.map_img = self.map_img.astype(np.float32)
         self.map_img = cv2.warpAffine(
             self.map_img, M_trans, self.map_img.shape, flags=cv2.INTER_NEAREST, borderValue=100)
@@ -179,7 +174,8 @@ class AndanteCameraLinetrace(Node):
         self.map_img = cv2.morphologyEx(
             self.map_img, cv2.MORPH_CLOSE, kernel, iterations=1)
         self.map_img = self.map_img.astype(np.int8)
-        self.map_img = np.where((0 <= self.map_img) & (self.map_img < 100),
+        # gradually reduce information
+        self.map_img = np.where((self.map_img < 100),
                                 self.map_img + 1, self.map_img)
         self.pre_pose = msg.pose.pose
 
