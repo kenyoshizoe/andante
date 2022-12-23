@@ -204,30 +204,23 @@ class AndanteCameraLinetrace(Node):
         cost = self.map_img + (length + 10)
         cost = cv2.blur(cost, (5, 5))
 
-        min_val = np.amin(cost)
-        max_val = np.amax(cost)
-
         min_idx = np.unravel_index(np.argmin(cost), cost.shape)
-        theta = math.atan2(
+        ref_theta = math.atan2(
             min_idx[0] - self.map_img.shape[1] / 2, min_idx[1] - self.map_img.shape[0] / 2)
-        # preview = self.map_img.copy()
-        # preview = cv2.line(
-        #     preview,
-        #     (int(self.map_img.shape[0] / 2), int(self.map_img.shape[1] // 2)),
-        #     (int(100 * math.cos(theta) + self.map_img.shape[1] / 2),
-        #      int(100 * math.sin(theta) + self.map_img.shape[0] / 2)),
-        #     255, 3
-        # )
-        # preview = cv2.circle(
-        #     preview, (min_idx[1], min_idx[0]), 5, 255, -1
-        # )
 
+        mask = np.zeros(self.map_img.shape, np.uint8)
+        mask = cv2.line(
+            mask,
+            (int(self.map_img.shape[0] / 2), int(self.map_img.shape[1] // 2)),
+            (int(self.map_img.shape[0] * math.cos(ref_theta) + self.map_img.shape[1] / 2),
+             int(self.map_img.shape[0] * math.sin(ref_theta) + self.map_img.shape[0] / 2)),
+            255, 3
+        )
+        mean = 100 - cv2.mean(self.map_img, mask=mask)[0]
         twist_msg = Twist()
-        twist_msg.linear.x = 0.1
-        twist_msg.angular.z = -theta * 5
+        twist_msg.linear.x = max(mean * 0.02, 0.1)
+        twist_msg.angular.z = -ref_theta * 5
         self.twis_pub.publish(twist_msg)
-        print(theta)
-        # ref_theta = 0
 
 
 def main(args=None):
