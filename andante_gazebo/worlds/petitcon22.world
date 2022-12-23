@@ -45,8 +45,7 @@
 
         <model name='petitcon22_world'>
             <static>1</static>
-            <pose>0 0 0.001 0 0 0</pose>
-
+            <pose>1.5025 -1.4 0.001 0 0 0</pose>
             <link name='ground'>
                 <collision name='collision'>
                     <geometry>

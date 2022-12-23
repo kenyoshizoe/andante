@@ -88,9 +88,7 @@ def generate_launch_description():
         output='screen',
         arguments=['-entity', 'andante',
                    '-topic', 'robot_description',
-                   '-robot_namespace', 'andante',
-                   '-x', '1.5025', '-y', '-1.4', '-z', '0.3',
-                   '-Y', str(math.pi)
+                   '-robot_namespace', 'andante'
                    ],
         parameters=[{'use_sim_time': True}, config],
     )
