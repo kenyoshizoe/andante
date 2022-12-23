@@ -3,7 +3,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, Command
-from launch_ros.actions import Node
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.descriptions import ParameterValue
 
 
@@ -13,12 +13,12 @@ def generate_launch_description():
         'config',
         'petitcon22.yaml'
     )
+    push_ns = PushRosNamespace('andante')
 
     create_driver = Node(
         package='create_driver',
         executable='create_driver',
         name='create_driver',
-        namespace='andante',
         parameters=[
             config
         ]
@@ -29,7 +29,6 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='create_2_robot_state_publisher',
-        namespace='andante',
         output='screen',
         parameters=[
             {
@@ -40,20 +39,29 @@ def generate_launch_description():
             config
         ]
     )
-    base = [create_driver, create_2_robot_state_publisher]
+
+    cmd_vel_smoother = Node(
+        package='andante_cmd_vel_smoother',
+        executable='andante_cmd_vel_smoother',
+        name='andante_cmd_vel_smoother',
+        output='screen',
+        parameters=[config]
+    )
 
     # camera
     camera_v4l2 = Node(
         package='v4l2_camera',
         executable='v4l2_camera_node',
         name='v4l2_camera',
-        namespace='andante/elp_camera',
+        namespace='elp_camera',
         output='screen',
         parameters=[config]
     )
 
-    base.append(camera_v4l2)
-
     return LaunchDescription(
-        base
+        push_ns,
+        create_driver,
+        create_2_robot_state_publisher,
+        cmd_vel_smoother,
+        camera_v4l2
     )
