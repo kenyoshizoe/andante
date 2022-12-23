@@ -20,15 +20,12 @@ class AndanteCameraLinetrace(Node):
 
         self.M = np.array(self.get_parameter("camera.M").value).reshape(3, 3)
         if self.get_parameter("camera.use_topic"):
-            img_topic = self.get_parameter("camera.img_topic").value
-            camera_info_topic = self.get_parameter(
-                "camera.camera_info_topic").value
             self.img_sub = self.create_subscription(
-                Image, img_topic,
+                Image, "camera/image_raw",
                 self.img_callback, 10
             )
             self.camera_info_sub = self.create_subscription(
-                CameraInfo, camera_info_topic,
+                CameraInfo, "camera/camera_info",
                 self.camera_info_callback, 10
             )
             self.bridge = CvBridge()
@@ -56,7 +53,7 @@ class AndanteCameraLinetrace(Node):
         self.map_img = np.full(
             (int(map_size / self.map_resolution), int(map_size / self.map_resolution)), 100, dtype=np.int8)
         self.map_pub = self.create_publisher(
-            OccupancyGrid, '/map', 10
+            OccupancyGrid, "map", 10
         )
         self.map_msg = OccupancyGrid()
         self.map_msg.header = Header()
@@ -68,22 +65,31 @@ class AndanteCameraLinetrace(Node):
         self.map_msg.info.origin.position.y = - map_size / 2
         # setup map updator
         self.create_subscription(
-            Odometry, self.get_parameter(
-                "odom_topic").value, self.map_update, 10
+            Odometry, "odom", self.map_update, 10
         )
         self.pre_pose = None
+        self.map_trans_tolerance = self.get_parameter(
+            "map.trans_tolerance").value
+        self.map_rotate_tolerance = self.get_parameter(
+            "map.rotate_tolerance").value
 
         self.motion_controller = self.create_timer(0.1, self.motion_control)
         self.twis_pub = self.create_publisher(
             Twist, "cmd_vel", 10
         )
+        self.center_circle_radius = self.get_parameter(
+            "motion_control.center_circle_radius").value // self.map_resolution
+        self.max_linear_vel = self.get_parameter(
+            "motion_control.max_linear_vel").value
+        self.min_linear_vel = self.get_parameter(
+            "motion_control.min_linear_vel").value
+        self.angular_vel_scale = self.get_parameter(
+            "motion_control.angular_vel_scale").value
 
     def declare_params(self):
         self.declare_parameter("base_frame")
-        self.declare_parameter("odom_topic")
         self.declare_parameter("camera.use_topic")
         self.declare_parameter("camera.img_topic")
-        self.declare_parameter("camera.camera_info_topic")
         self.declare_parameter("camera.camera_src")
         self.declare_parameter("camera.width")
         self.declare_parameter("camera.height")
@@ -97,6 +103,12 @@ class AndanteCameraLinetrace(Node):
         self.declare_parameter("camera.M")
         self.declare_parameter("map.size")
         self.declare_parameter("map.resolution")
+        self.declare_parameter("map.trans_tolerance")
+        self.declare_parameter("map.rotate_tolerance")
+        self.declare_parameter("motion_control.center_circle_radius")
+        self.declare_parameter("motion_control.max_linear_vel")
+        self.declare_parameter("motion_control.min_linear_vel")
+        self.declare_parameter("motion_control.angular_vel_scale")
         self.declare_parameter("calibration.src")
         self.declare_parameter("calibration.marker_size")
         self.declare_parameter("calibration.marker_pose.x")
@@ -159,8 +171,7 @@ class AndanteCameraLinetrace(Node):
             self.pre_pose.orientation.x, self.pre_pose.orientation.y,
             self.pre_pose.orientation.z, self.pre_pose.orientation.w])[2]
         dtheta = -(cur_theta - pre_theta)
-        # TODO: Quit hard coding
-        if abs(math.sqrt(dx**2 + dy**2)) < 0.01 and abs(dtheta) < (math.pi / 36):
+        if abs(math.sqrt(dx**2 + dy**2)) < self.map_trans_tolerance and abs(dtheta) < self.map_rotate_tolerance:
             return
         dx_img = (math.cos(cur_theta) * dx +
                   math.sin(cur_theta) * dy) / self.map_resolution
@@ -188,9 +199,8 @@ class AndanteCameraLinetrace(Node):
                                 self.map_img + 1, self.map_img)
         self.pre_pose = msg.pose.pose
 
-        # TODO: Quit hard coding
         cv2.circle(
-            self.map_img, (self.map_img.shape[1] // 2, self.map_img.shape[0]), 5, 0)
+            self.map_img, (self.map_img.shape[1] // 2, self.map_img.shape[0] // 2), 5, 100, -1)
 
     def motion_control(self):
         mesh_x, mesh_y = np.meshgrid(
@@ -218,8 +228,9 @@ class AndanteCameraLinetrace(Node):
         )
         mean = 100 - cv2.mean(self.map_img, mask=mask)[0]
         twist_msg = Twist()
-        twist_msg.linear.x = max(mean * 0.02, 0.1)
-        twist_msg.angular.z = -ref_theta * 5
+        twist_msg.linear.x = max(
+            mean * (self.max_linear_vel / 100.0), self.min_linear_vel)
+        twist_msg.angular.z = -ref_theta * self.angular_vel_scale
         self.twis_pub.publish(twist_msg)
 
 
