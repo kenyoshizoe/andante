@@ -48,7 +48,11 @@ def generate_launch_description():
         executable='andante_cmd_vel_smoother',
         name='andante_cmd_vel_smoother',
         output='screen',
-        parameters=[config]
+        parameters=[config],
+        remappings=[
+            ('cmd_vel', 'cmd_vel_unfiltered'),
+            ('cmd_vel_filtered', 'cmd_vel')
+        ]
     )
 
     # gazebo
