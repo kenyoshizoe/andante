@@ -62,10 +62,10 @@ def generate_launch_description():
         parameters=[config]
     )
 
-    return LaunchDescription(
+    return LaunchDescription([
         push_ns,
         create_driver,
         create_2_robot_state_publisher,
         cmd_vel_smoother,
         camera_v4l2
-    )
+    ])
