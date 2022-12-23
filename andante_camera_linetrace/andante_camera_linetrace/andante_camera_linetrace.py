@@ -5,6 +5,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
 from nav_msgs.msg import OccupancyGrid, Odometry
+from geometry_msgs.msg import Twist
 from std_msgs.msg import Header
 import tf_transformations
 import tf2_ros
@@ -72,6 +73,11 @@ class AndanteCameraLinetrace(Node):
         )
         self.pre_pose = None
 
+        self.motion_controller = self.create_timer(0.1, self.motion_control)
+        self.twis_pub = self.create_publisher(
+            Twist, "cmd_vel", 10
+        )
+
     def declare_params(self):
         self.declare_parameter("base_frame")
         self.declare_parameter("odom_topic")
@@ -118,19 +124,24 @@ class AndanteCameraLinetrace(Node):
 
     def process_img(self, frame):
         ret, frame = cv2.threshold(frame, 200, 100, cv2.THRESH_BINARY_INV)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        frame = cv2.morphologyEx(
-            frame, cv2.MORPH_CLOSE, kernel, iterations=2)
 
         frame += 1
         observe = cv2.warpPerspective(
             frame, self.M, self.map_img.shape, borderMode=cv2.BORDER_CONSTANT, borderValue=-1).astype(np.int8)
         observe -= 1
 
-        self.map_img = np.where(observe == -1, self.map_img, observe)
+        self.map_img = np.where(
+            observe == -1, self.map_img, observe).astype(np.uint8)
+
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        self.map_img = cv2.morphologyEx(
+            self.map_img, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+        cv2.circle(
+            self.map_img, (self.map_img.shape[1] // 2, self.map_img.shape[0] // 2), 5, 100, -1)
         # publish map_msg
         self.map_msg.header.stamp = self.get_clock().now().to_msg()
-        map_data = cv2.flip(self.map_img, 0).flatten().tolist()
+        map_data = cv2.flip(self.map_img, 0).astype(np.int8).flatten().tolist()
         self.map_msg.data = map_data
         self.map_pub.publish(self.map_msg)
 
@@ -169,15 +180,54 @@ class AndanteCameraLinetrace(Node):
         self.map_img = cv2.warpAffine(
             self.map_img, M_rotate, self.map_img.shape, flags=cv2.INTER_NEAREST, borderValue=100)
         # remove noise
-        self.map_img = self.map_img.astype(np.uint8)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
         self.map_img = cv2.morphologyEx(
             self.map_img, cv2.MORPH_CLOSE, kernel, iterations=1)
-        self.map_img = self.map_img.astype(np.int8)
         # gradually reduce information
         self.map_img = np.where((self.map_img < 100),
                                 self.map_img + 1, self.map_img)
         self.pre_pose = msg.pose.pose
+
+        # TODO: Quit hard coding
+        cv2.circle(
+            self.map_img, (self.map_img.shape[1] // 2, self.map_img.shape[0]), 5, 0)
+
+    def motion_control(self):
+        mesh_x, mesh_y = np.meshgrid(
+            range(self.map_img.shape[0]), range(self.map_img.shape[1]))
+        mesh_x = mesh_x.astype(np.float64)
+        mesh_y = mesh_y.astype(np.float64)
+
+        mesh_x -= self.map_img.shape[0] / 2
+        mesh_y -= self.map_img.shape[1] / 2
+        length = (mesh_x ** 2 + mesh_y ** 2) ** 0.5
+        cost = self.map_img + (length + 10)
+        cost = cv2.blur(cost, (5, 5))
+
+        min_val = np.amin(cost)
+        max_val = np.amax(cost)
+
+        min_idx = np.unravel_index(np.argmin(cost), cost.shape)
+        theta = math.atan2(
+            min_idx[0] - self.map_img.shape[1] / 2, min_idx[1] - self.map_img.shape[0] / 2)
+        # preview = self.map_img.copy()
+        # preview = cv2.line(
+        #     preview,
+        #     (int(self.map_img.shape[0] / 2), int(self.map_img.shape[1] // 2)),
+        #     (int(100 * math.cos(theta) + self.map_img.shape[1] / 2),
+        #      int(100 * math.sin(theta) + self.map_img.shape[0] / 2)),
+        #     255, 3
+        # )
+        # preview = cv2.circle(
+        #     preview, (min_idx[1], min_idx[0]), 5, 255, -1
+        # )
+
+        twist_msg = Twist()
+        twist_msg.linear.x = 0.1
+        twist_msg.angular.z = -theta * 5
+        self.twis_pub.publish(twist_msg)
+        print(theta)
+        # ref_theta = 0
 
 
 def main(args=None):
