@@ -1,22 +1,4 @@
 andante:
-  create_driver:
-    ros__parameters:
-      dev: "/dev/ttyUSB0"
-      # baud: 115200
-      base_frame: "base_footprint"
-      odom_frame: "odom"
-      latch_cmd_duration: 1.0
-      loop_hz: 30.0
-      publish_tf: true
-      oi_mode_workaround: true
-
-  v4l2_camera:
-    ros__parameters:
-      video_device: "/dev/video0"
-      pixel_format: "YUYV"
-      output_encoding: "rgb8"
-      image_size: [640, 480]
-
   andante_camera_linetrace:
     ros__parameters:
       base_frame: "base_footprint"
@@ -39,6 +21,19 @@ andante:
           - 0.0004862571635758298
           - -0.1260595834413847
         # using andante_camera_linetracer/calibration
+        # M:
+        #   [
+        #     -3.33881773e+01,
+        #     -8.37957446e+01,
+        #     9.56614640e+03,
+        #     -3.30758515e+00,
+        #     -1.53378238e+02,
+        #     1.21911968e+04,
+        #     -9.35667651e-03,
+        #     -1.68113899e-01,
+        #     1.00000000e+00,
+        #   ]
+
         M:
           [
             -0.16951049520265474,
