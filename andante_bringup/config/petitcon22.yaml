@@ -20,13 +20,8 @@ andante:
   andante_camera_linetrace:
     ros__parameters:
       base_frame: "base_footprint"
-      odom_topic: "odom"
       camera:
         use_topic: true
-        # for use_topic = true
-        img_topic: "/elp_camera/image_raw"
-        camera_info_topic: "/elp_camera/camera_info"
-        # for use_topic = false
         camera_src: "/dev/video0"
         width: 640
         height: 480
@@ -59,20 +54,28 @@ andante:
 
         M:
           [
-            -0.18351721339571514,
-            -3.6075658730079145,
-            -184.26041150500012,
-            -0.8316711051409217,
-            -3.634237181383389,
-            332.3743000259478,
-            -0.0010795130199747923,
-            -0.03621295251176895,
+            -0.16951049520265474,
+            -6.90404240814824,
+            -492.0259861827914,
+            -1.2590913253286737,
+            -6.86473106881554,
+            535.0045092418875,
+            0.0009971205600156246,
+            -0.06862834874800666,
             1.0,
           ]
       # Occupancy Gridの設定
       map:
         size: 2.0 # [m]
         resolution: 0.01 # [m/pixel]
+        trans_tolerance: 0.01
+        rotate_tolerance: 0.08726646259
+      motion_control:
+        center_circle_radius: 0.05 # [m]
+        max_linear_vel: 1.0
+        min_linear_vel: 0.1
+        angular_vel_scale: 3
+
       calibration:
         src: "img/60_2.jpg"
         # marker_size: 0.093 # [m]
