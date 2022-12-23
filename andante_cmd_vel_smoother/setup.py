@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'andante_cmd_vel_smoother = andante_cmd_vel_smoother.andante_cmd_vel_smoother:main'
         ],
     },
 )
