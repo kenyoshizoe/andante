@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from rclpy.duration import Duration
+from create_msgs.msg import Cliff
 
 
 class AndanteCmdVelSmoother(Node):
@@ -22,10 +22,10 @@ class AndanteCmdVelSmoother(Node):
         self.pre_time = self.get_clock().now()
 
         self.create_subscription(
-            Twist, "cmd_vel", self.cmd_vel_callback, 10
+            Twist, "cmd_vel_unfiltered", self.cmd_vel_callback, 10
         )
         self.cmd_vel_pub = self.create_publisher(
-            Twist, "cmd_vel_filtered", 10
+            Twist, "cmd_vel", 10
         )
 
         self.freq = self.get_parameter("rate").value

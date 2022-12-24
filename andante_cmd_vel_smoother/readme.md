@@ -5,13 +5,13 @@ linear.z / angular.x / angular.y は0になります。
 
 ## Topic
 ### Publisher
-| Topic Name       | Message Type        | Description |
-| ---------------- | ------------------- | ----------- |
-| cmd_vel_filtered | geometry_msgs/Twist |             |
-### Subscriber
 | Topic Name | Message Type        | Description |
 | ---------- | ------------------- | ----------- |
 | cmd_vel    | geometry_msgs/Twist |             |
+### Subscriber
+| Topic Name         | Message Type        | Description |
+| ------------------ | ------------------- | ----------- |
+| cmd_vel_unfiltered | geometry_msgs/Twist |             |
 
 ## Parameters
 | Name           | Description                   | Default |
