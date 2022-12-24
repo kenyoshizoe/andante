@@ -64,6 +64,9 @@ class AndanteCmdVelSmoother(Node):
             self.ref_cmd_vel = Twist()
         if (self.get_clock().now() - self.pre_emergency_time).nanoseconds / 1e9 > self.emergency_reset_time:
             self.emergency = False
+        if self.emergency:
+            self.cmd_vel = Twist()
+            self.ref_cmd_vel = Twist()
 
         filtered_linear_x = self.calc_lpf(
             self.cmd_vel.linear.x, self.ref_cmd_vel.linear.x)
@@ -104,18 +107,15 @@ class AndanteCmdVelSmoother(Node):
     def bumper_callback(self, msg):
         if msg.is_left_pressed or msg.is_right_pressed:
             self.emergency = True
-            self.ref_cmd_vel = Twist()
             self.pre_emergency_time = self.get_clock().now()
 
     def cliff_callback(self, msg):
         if msg.is_cliff_left or msg.is_cliff_front_left or msg.is_cliff_right or msg.is_cliff_front_right:
             self.emergency = True
-            self.ref_cmd_vel = Twist()
             self.pre_emergency_time = self.get_clock().now()
 
     def wheeldrop_callback(self, msg):
         self.emergency = True
-        self.ref_cmd_vel = Twist()
         self.pre_emergency_time = self.get_clock().now()
 
 
