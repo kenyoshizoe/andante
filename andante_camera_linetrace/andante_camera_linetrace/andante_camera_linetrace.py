@@ -138,7 +138,7 @@ class AndanteCameraLinetrace(Node):
         pass
 
     def process_img(self, frame):
-        ret, frame = cv2.threshold(frame, 200, 100, cv2.THRESH_BINARY_INV)
+        ret, frame = cv2.threshold(frame, self.threshold, 100, cv2.THRESH_BINARY_INV)
 
         frame += 1
         observe = cv2.warpPerspective(
