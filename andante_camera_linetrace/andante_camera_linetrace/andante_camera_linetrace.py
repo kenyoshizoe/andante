@@ -160,6 +160,8 @@ class AndanteCameraLinetrace(Node):
         self.map_msg.data = map_data
         self.map_pub.publish(self.map_msg)
 
+        self.image_received = True
+
     def map_update(self, msg):
         if self.pre_pose is None:
             self.pre_pose = msg.pose.pose
