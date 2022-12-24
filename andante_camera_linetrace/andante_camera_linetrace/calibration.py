@@ -14,15 +14,12 @@ class AndanteCameraLinetraceCalibration(Node):
         self.loaded_param = False
 
         if self.get_parameter("camera.use_topic").value:
-            img_topic = self.get_parameter("camera.img_topic").value
-            camera_info_topic = self.get_parameter(
-                "camera.camera_info_topic").value
             self.img_sub = self.create_subscription(
-                Image, img_topic,
+                Image, "camera/image_raw",
                 self.img_callback, 10
             )
             self.camera_info_sub = self.create_subscription(
-                CameraInfo, camera_info_topic,
+                CameraInfo, "camera/camera_info",
                 self.camera_info_callback, 10
             )
             self.bridge = CvBridge()
