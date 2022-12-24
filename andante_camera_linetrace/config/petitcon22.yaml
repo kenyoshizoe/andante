@@ -46,6 +46,7 @@ andante:
             -0.06862834874800666,
             1.0,
           ]
+        threshold: 100
       # Occupancy Gridの設定
       map:
         size: 2.0 # [m]

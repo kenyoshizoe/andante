@@ -17,8 +17,10 @@ class AndanteCameraLinetrace(Node):
         super().__init__("andante_camera_linetrace")
         self.declare_params()
         self.param_loaded = False
+        self.image_received = False
 
         self.M = np.array(self.get_parameter("camera.M").value).reshape(3, 3)
+        self.threshold = self.get_parameter("camera.threshold").value
         if self.get_parameter("camera.use_topic"):
             self.img_sub = self.create_subscription(
                 Image, "camera/image_raw",
@@ -101,6 +103,7 @@ class AndanteCameraLinetrace(Node):
         self.declare_parameter("camera.camera_matrix.cy")
         self.declare_parameter("camera.dist")
         self.declare_parameter("camera.M")
+        self.declare_parameter("camera.threshold")
         self.declare_parameter("map.size")
         self.declare_parameter("map.resolution")
         self.declare_parameter("map.trans_tolerance")
@@ -203,6 +206,8 @@ class AndanteCameraLinetrace(Node):
             self.map_img, (self.map_img.shape[1] // 2, self.map_img.shape[0] // 2), 5, 100, -1)
 
     def motion_control(self):
+        if not self.image_received:
+            return
         mesh_x, mesh_y = np.meshgrid(
             range(self.map_img.shape[0]), range(self.map_img.shape[1]))
         mesh_x = mesh_x.astype(np.float64)
